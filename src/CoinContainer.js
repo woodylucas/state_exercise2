@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import { choice } from './helpers'
+import Coin from './Coin'; 
 
 class CoinContainer extends Component {
     static defaultProps = {
         coins: [
-            { side: 'head', imgSrc: "https://tinyurl.com/react-coin-heads-jpg" }, 
-            { side: 'tails', imgSrc: "https://tinyurl.com/react-coin-tails-jpg" }
+            { side: 'heads', imgSrc: "https://tinyurl.com/react-coin-heads-jpg" }, 
+            { side: 'tails', imgSrc:  "http://www.pcgscoinfacts.com/UserImages/71009269r.jpg"}
         ]
     }; 
 
@@ -14,7 +15,7 @@ class CoinContainer extends Component {
         this.state = {
             currCoin: null,
             numFlips: 0, 
-            numHead: 0, 
+            numHeads: 0, 
             numTails: 0
         } 
         this.handleClick = this.handleClick.bind(this); 
@@ -22,6 +23,14 @@ class CoinContainer extends Component {
 
     flipCoin() {
         const newCoin = choice(this.props.coins); 
+        this.setState( st => {
+            return {
+                currCoin: newCoin, 
+                numFlips: st.numFlips + 1, 
+                numHeads: st.numHeads + (newCoin.side === "heads" ? 1 : 0),
+                numTails: st.numTails + (newCoin.side === "tails" ? 1 : 0)
+            }
+        })
     }
     
     handleClick(event) {
@@ -33,11 +42,12 @@ class CoinContainer extends Component {
         return(
             <div className="CoinContainer">
                 <h2>Let's Flip A Coin!!</h2>
-                <button onClick={this.handleClick}>Flip Me! </button>
+                {this.state.currCoin && <Coin info={this.state.currCoin} />}
                 <p>
-                    Out of {this.state.numFlips} flips, there has been {this.state.numHead}{" "} 
+                    Out of {this.state.numFlips} flips, there has been {this.state.numHeads}{" "} 
                     heads and {this.state.numTails} tails.
                 </p>
+                <button onClick={this.handleClick}>Flip Me!</button>
             </div>
         ) 
     }
